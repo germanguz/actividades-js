@@ -43,59 +43,102 @@
 <!-- * ======== La solución según el video ======== -->
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Actividades cortas y sencillas de js</title>
+
+    <style type="text/css">
+        body,
+        input,
+        button {
+            font-family: sans-serif;
+        }
+        img {
+            width: 100%;
+        }
+        .nombre {
+            font-size: 1.2em;
+            text-align: center;
+        }
+        .rey {
+            width: 49%;
+        }
+        #lista {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+    </style>
+
+    <script type="text/javascript">
+        window.onload = inicio;
+        let reyes = [];
+        const url = "./images";
+
+        function inicio() {
+            document.querySelector("#agregar").onclick = agregar;
+            document.querySelector("#nombre").onkeydown = teclado;
+        }
+        function teclado(e) {
+            const tecla = e.key;
+            if (tecla == "Enter") {
+                agregar();
+            }
+        }
+        function agregar() {
+            const escrito = document.querySelector("#nombre").value.trim().toLowerCase(); /* trim para borrar espacios en blanco al inicio o al fin */
+            const existe = reyes.some(a => a == escrito);
+            if (!existe && escrito != "") { /* el (&& escrito != "") lo agregué yo para que no guarde vacio y ponga la imagen sin nombre  */
+                reyes.push(escrito);
+                mostrar();
+            }
+            vaciar();
+        }
+        function mostrar() {
+            document.querySelector("#lista").innerHTML = "";
+            reyes.forEach(nombre => {
+                document.querySelector("#lista").insertAdjacentHTML("beforeend", `<div class="rey">
+                <img src="${url}/imagen_${nombre}.jpg" onerror="errores(this)"/>
+                <div class="nombre">${convertidor(nombre)}</div>
+                </div>`);
+                const ultimo = document.querySelectorAll(".rey").length-1;
+                document.querySelectorAll(".rey")[ultimo].onclick=eliminar;
+            })
+        }
+        function eliminar() {
+            const texto = this.querySelector(".nombre").innerText.toLowerCase();
+            const buscar = reyes.indexOf(texto);
+            reyes.splice(buscar, 1);
+            this.remove();
+        }
+        function errores(e) {
+            e.src = `${url}/imagen_not_found.jpg`;
+        }
+        function convertidor(n) {
+            return n.substring(0, 1).toUpperCase() + n.substring(1).toLowerCase();
+        }
+        function vaciar() {
+            document.querySelector("#nombre").value = "";
+            document.querySelector("#nombre").focus();
+        }
+    </script>
 </head>
 
-<script type="text/javascript">
-    window.onload=inicio;
-    let reyes = [];
-    function inicio() {
-        document.querySelector("#agregar").onclick = agregar;
-        document.querySelector("#nombre").onkeydown = teclado;
-    }
-    function teclado(e) {
-        const tecla = e.key;
-        if (tecla == "Enter") {
-            agregar();
-        }
-    }
-    function agregar() {
-        const escrito = document.querySelector("#nombre").value.trim().toLowerCase(); /* trim para borrar espacios en blanco al inicio o al fin */
-        const existe = reyes.some(a => a == escrito);
-        if (!existe) {
-            reyes.push(escrito);
-            mostrar();
-        }
-        vaciar();
-    }
-    function mostrar() {
-        document.querySelector("#lista").innerHTML = "";
-        reyes.forEach(nombre => {
-            document.querySelector("#lista").insertAdjacentHTML("beforeend", `<div>${convertidor(nombre)}</div>`)
-        })
-    }
-    function convertidor(n) {
-        return n.substring(0 ,1).toUpperCase() + n.substring(1).toLowerCase();
-    }
-    function vaciar() {
-        document.querySelector("#nombre").value = "";
-        document.querySelector("#nombre").focus();
-    }
-</script>
 <body>
     <h1>Actividad #9</h1>
     <h2>Primera parte - los arrays</h2>
-    <h4>Lo que escribamos se añade siempre con la primera letra en mayúscula y el resto en minúscula, no importando como haya sido el ingreso (todo mayúscula, todo minúscula o mezclado). Además no acepta repetidos</h4>
+    <h4>Lo que escribamos se añade siempre con la primera letra en mayúscula y el resto en minúscula, no importando como
+        haya sido el ingreso (todo mayúscula, todo minúscula o mezclado). Además no acepta repetidos</h4>
 
     <label for="nombre">Rey Godo</label>
     <input id="nombre" type="text" autocomplete="off" autofocus placeholder="Escribe un nombre">
     <button id="agregar">Añadir</button>
     <div id="lista"></div>
 
-    
+
 </body>
+
 </html>
 <!-- 28:50 -->
